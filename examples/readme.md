@@ -14,5 +14,11 @@
 ## hdl_sdl_instance
     instance of hdl and sdl
 
+## generate
+    examples for generate
+
+## logic_combin
+    combin logic by (>>, <<)
+
 ## itegration
     powerful!!! Itegrative design

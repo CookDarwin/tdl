@@ -39,8 +39,6 @@ TdlBuild.test_module(__dir__) do
 end
 ```
 ```systemverilog
-`timescale 1ns/1ps
-
 module test_module (
     input             clock,
     input             rst_n,
@@ -75,8 +73,6 @@ TdlBuild.test_interface(__dir__) do
 end 
 ```
 ```systemverilog
-`timescale 1ns/1ps
-
 module test_module (
     input                   clock,
     input                   rst_n,
@@ -96,7 +92,6 @@ end
 ## 4. always assign 
 ```ruby 
 TdlBuild.test_module(__dir__) do 
-
     input.clock         - 'clock'
     input.reset('low')  - 'rst_n'
     input               - 'd0'
@@ -137,8 +132,6 @@ TdlBuild.test_module(__dir__) do
 end
 ```
 ```systemverilog
-`timescale 1ns/1ps
-
 module test_module (
     input                   clock,
     input                   rst_n,
@@ -173,6 +166,129 @@ always_comb begin
 end
 
 assign  o1 = 1'b0;
+
+endmodule
+```
+## 5. generate
+```ruby
+TdlBuild.test_generate(__dir__) do 
+    parameter.NUM       8
+    input[8]            - 'ain'
+    output[8]           - 'bout'
+
+    input[param.NUM,6]  - 'cin'
+    output[6,param.NUM] - 'dout'
+
+    input[param.NUM]    - 'ein'
+    output[param.NUM]   - 'fout'
+
+    generate(8) do |kk|
+        Assign do 
+            bout[kk]    <= ain[7-kk]
+        end
+    end
+
+    generate(param.NUM) do |cc|
+        IF cc < 4 do
+            Assign do  
+                dout[cc]    <= cin[cc]
+            end
+        end
+        ELSE do 
+            Assign do 
+                dout[cc]    <= cin[cc] + cc 
+            end
+        end
+    end
+
+    generate(param.NUM,6) do |ii,gg|
+        Assign do 
+            fout[ii][gg]    <= ein[gg][ii]
+        end
+    end
+end
+```
+```systemverilog
+module test_generate #(
+    parameter  NUM = 8
+)(
+    input [7:0]       ain,
+    output [7:0]      bout,
+    input [5:0]       cin  [NUM-1:0],
+    output [ NUM-1:0] dout [6-1:0],
+    input [ NUM-1:0]  ein,
+    output [ NUM-1:0] fout
+);
+
+generate
+for(genvar KK0=0;KK0 < 8;KK0++)begin
+    assign  bout[ KK0] = ain[ 7-( KK0)];
+end
+endgenerate
+
+generate
+for(genvar KK0=0;KK0 < NUM;KK0++)begin
+
+    if( KK0<4)begin
+        assign  dout[ KK0] = cin[ KK0];
+    end 
+    else begin
+        assign  dout[ KK0] = ( cin[ KK0]+( KK0));
+    end
+end
+endgenerate
+
+generate
+for(genvar KK0=0;KK0 < NUM;KK0++)begin
+    for(genvar KK1=0;KK1 < 6;KK1++)begin
+        assign  fout[ KK0][ KK1] = ein[ KK1][ KK0];
+    end
+end
+endgenerate
+
+endmodule
+```
+
+## 6. combin logic
+```ruby
+TdlBuild.test_logic_combin(__dir__) do 
+    logic[7]    - 'a0'
+    logic[5]    - 'a1'
+    logic[9]    - 'a2'
+    logic[9+5+7]    - 'ca'
+
+    logic[2,8]  - 'b0'
+    logic[16]   - 'b1'
+    logic[32]   - 'cb'
+
+    logic[1,8]  - 'c0'
+    logic[3,8]  - 'c1'
+    logic[2,16] - 'cc'
+
+    Assign do 
+        ca <= logic_bind_(a0, a1, a2)
+        cb <= self.>>(b1, b0)
+        cc <= self.<<(c0, c1)
+    end
+end
+```
+```systemverilog
+module test_logic_combin ();
+
+logic [7-1:0]  a0 ;
+logic [5-1:0]  a1 ;
+logic [9-1:0]  a2 ;
+logic [21-1:0]  ca ;
+logic [8-1:0]  b0[2-1:0] ;
+logic [16-1:0]  b1 ;
+logic [32-1:0]  cb ;
+logic [8-1:0]  c0[1-1:0] ;
+logic [8-1:0]  c1[3-1:0] ;
+logic [16-1:0]  cc[2-1:0] ;
+
+assign  ca = {a0,a1,a2};
+assign  cb = {>>{b1,b0}};
+assign  cc = {<<{c0,c1}};
 
 endmodule
 ```
