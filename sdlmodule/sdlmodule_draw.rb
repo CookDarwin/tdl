@@ -1,4 +1,5 @@
-
+## read sdlmodule head
+$__sdlmodule_head_logo__ = File.open(File.join(__dir__,"sdlmodule_head_logo.txt")).read
 class SdlModule
     attr_accessor :origin_sv
 
@@ -123,22 +124,13 @@ Version: VERA.0.0
 created: #{Time.now()}
 madified:
 ***********************************************/
-`timescale 1ns/1ps
+#{macro_def}
 #{head_class}
 }
     end
 
     def module_head
-%Q{/**********************************************
-______________                ______________
-______________ \\  /\\  /|\\  /| ______________
-______________  \\/  \\/ | \\/ | ______________
-descript:
-author : WM
-Version: VERA.0.0
-created: #{Time.now()}
-madified:
-***********************************************/
+%Q{#{$__sdlmodule_head_logo__}
 #{macro_def}
 #{head_class}
 }

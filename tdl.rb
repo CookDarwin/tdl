@@ -1,3 +1,4 @@
+$__start_time__ = Time.now
 # require_relative "./tdlerror"
 require_relative './tdlerror/tdlerror'
 require_relative './global_scan'
@@ -35,6 +36,7 @@ require_relative "./class_hdl/hdl_package.rb"
 require_relative "./class_hdl/hdl_foreach.rb"
 require_relative "./class_hdl/hdl_initial.rb"
 require_relative "./class_hdl/hdl_verify.rb"
+require_relative "./class_hdl/hdl_random.rb"
 
 require_relative "./Logic/logic_latency.rb"
 require_relative "./Logic/logic_edge.rb"
@@ -103,6 +105,15 @@ require_relative "./auto_script/import_hdl.rb"
 ## 定义直接引用 TDL Module
 require_relative "./auto_script/import_sdl.rb"
 
+## 信号添加测试点
+require_relative "./exlib/test_point.rb"
+## 添加测试用例
+# require_relative "./exlib/sdlmodule_sim.rb"
+require_relative "./sdlmodule/test_unit_module.rb"
+
+## 添加 DVE TCL 支持
+require_relative "./exlib/dve_tcl.rb"
+
 ## --- INIT BLOCK Methods -----
 # AutoGenSdl.add_inf_parse TrackInf.method(:parse_ports)
 # SdlInst.add_inst_t0_method TrackInf.method(:sdlinst_t0)
@@ -123,7 +134,7 @@ class Tdl
 end
 
 class Tdl
-    @@Axi4Path = '..\..\axi'
+    @@Axi4Path = 'E:\work\AXI'
 
     def self.Axi4Path
         @@Axi4Path
@@ -235,8 +246,14 @@ class Tdl
         self.log_array("LOG FOR GEN SDLMOUDLE",@@build_sdlmodule_collect)
         self.log_array("LOG OF WARNING",@@warning_collect)
         # puts(page(tag: "SUMMARY" ,body: "RUN @ TIME : #{Time.now}"))
+        puts(pagination("TEST POINT"))
+        puts TdlTestPoint.echo_list
+        # puts(pagination("SIM TEST"))
+        # puts TdlSimTest::TdlBaseTestUnit.echo_prj_test_list
+        puts(pagination("TEST UNIT"))
+        puts TopModule.current.test_unit.echo_units
         puts(pagination("SUMMARY"))
-        puts "RUN @ TIME : #{Time.now}"
+        puts "#{TopModule.sim ? 'SIM' : 'SYNTH'} RUN SPEND #{Time.now - $__start_time__} sec @ TIME : #{Time.now}"
     end
 
 end

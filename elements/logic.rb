@@ -99,11 +99,11 @@ class Logic < SignalElm
         end
 
         # RedefOpertor.with_normal_operators do
-        #     TDLSpace::ArrayChain.new(self,a,b)
+        #     TdlSpace::ArrayChain.new(self,a,b)
         # end
         # end
         ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
-            TDLSpace::ArrayChain.new(self,a,b)
+            TdlSpace::ArrayChain.new(self,a,b)
         end
     end
 

@@ -430,6 +430,8 @@ class ItegrationVerb
         techbench_vector()
         ## 执行 约束
         inst_constraints()
+        ## 执行单元测试
+        test_unit_inst()
     end
 
     def tb_inst
@@ -452,6 +454,35 @@ class ItegrationVerb
             ;
         end
         ItegrationVerb.curr_itgt_pop
+    end
+
+    ## 测试用例 实例化
+    def test_unit_inst
+
+        blocks = self.class.instance_variable_get("@_inst_test_unit_blocks_")
+        return unless blocks
+        return if blocks.empty?
+        ItegrationVerb.curr_itgt_push self
+
+       
+        blocks.each do |b|
+            # @top_module.techbench.instance_exec(self,&b.clone)
+            sdlm = TestUnitModule.new(name: b[0],out_sv_path: b[1])
+            $_implicit_curr_itgt_.with_none_itgt do 
+                sdlm.input - "from_up_pass"
+                sdlm.output.logic - "to_down_pass"
+            end
+            sdlm.instance_exec(&b[2])
+
+            if b[1] && File.exist?(b[1])
+                sdlm.gen_sv_module
+            else 
+                sdlm.origin_sv = true 
+            end
+        end
+
+        ItegrationVerb.curr_itgt_pop
+
     end
 
     def inst_child_module
@@ -699,6 +730,15 @@ class ItegrationVerb
         _inst_tb_blocks_ ||= []
         _inst_tb_blocks_ << block
         instance_variable_set("@_inst_tb_blocks_",_inst_tb_blocks_)
+    end
+
+    ## 添加测试用例
+
+    def self.def_test_unit(name,path,&block)
+        _inst_test_unit_blocks_ = instance_variable_get("@_inst_test_unit_blocks_")
+        _inst_test_unit_blocks_ ||= []
+        _inst_test_unit_blocks_ << [name.to_s, path, block]
+        instance_variable_set("@_inst_test_unit_blocks_",_inst_test_unit_blocks_)
     end
 
     ## 生成 itgt内的模块,

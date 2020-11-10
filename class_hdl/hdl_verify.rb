@@ -45,13 +45,13 @@ module ClassHDL
                 ## 定义 MEM
          
                 ## 判断 intf是否是真正的 interface 
-                if intf.is_a? TDLSpace::TdlBaseInterface
+                if intf.is_a? TdlSpace::TdlBaseInterface
                     logic[fsize][intf.DSIZE] - "track_#{intf.inst_name}_mem"
                     track_ci = logic.integer - "track_#{intf.inst_name}_ci"
                     mem_args = "track_#{intf.inst_name}_mem"
                     mem_format = "%d"
                     block_name = intf.inst_name
-                elsif intf.is_a? TDLSpace::ArrayChain
+                elsif intf.is_a? TdlSpace::ArrayChain
                     logic[fsize][intf.DSIZE] - "track_#{@@def_mem_index}_mem"
                     track_ci = logic.integer - "track_#{@@def_mem_index}_ci"
                     mem_args = "track_#{@@def_mem_index}_mem"

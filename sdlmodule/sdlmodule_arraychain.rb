@@ -9,7 +9,7 @@ DefArrayChain:
     - DefAxi4_ArrayChain
 """
 
-module TDLSpace 
+module TdlSpace 
 
     class DefArrayChain
 
@@ -108,6 +108,11 @@ module TDLSpace
 
         def integer 
             @type = 'integer'
+            return self 
+        end
+
+        def string 
+            @type = "string"
             return self 
         end
     end 
@@ -282,31 +287,31 @@ end
 class SdlModule
 
     def logic 
-        TDLSpace::DefLogicArrayChain.new(self)
+        TdlSpace::DefLogicArrayChain.new(self)
     end
 
     def debugLogic
-        TDLSpace::DefDebugLogicArrayChain.new(self)
+        TdlSpace::DefDebugLogicArrayChain.new(self)
     end
 
     # def data_inf_c(dsize: 8,freqM: nil,clock: nil,reset: nil)
-    #     TDLSpace::DefDataInf_C_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize)
+    #     TdlSpace::DefDataInf_C_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize)
     # end
 
     # def data_inf(dsize:8)
-    #     TDLSpace::DefDataInf_ArrayChain.new(belong_to_module: self,dsize: dsize)
+    #     TdlSpace::DefDataInf_ArrayChain.new(belong_to_module: self,dsize: dsize)
     # end
 
     # def axi_stream_inf(dsize: 8,freqM: nil,clock: nil,reset: nil)
-    #     TDLSpace::DefAxiStream_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize)
+    #     TdlSpace::DefAxiStream_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize)
     # end
 
     # def axi_lite_inf(clock: nil,reset: nil,dsize: 8,asize: 8,mode: AxiLite::BOTH,freqM: nil)
-    #     TDLSpace::DefAxiLite_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize,asize: asize,mode: mode)
+    #     TdlSpace::DefAxiLite_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize,asize: asize,mode: mode)
     # end
 
     # def axi_inf(clock: nil,reset: nil,dsize: 8,asize: 8,mode: AxiLite::BOTH,freqM: nil,lsize: 8,idsize:1,addr_step: 1.0)
-    #     TDLSpace::DefAxi4_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize,asize: asize,mode: mode,lsize: lsize,idsize: idsize,addr_step: addr_step)
+    #     TdlSpace::DefAxi4_ArrayChain.new(belong_to_module: self,clock: clock,reset: reset,freqM: freqM,dsize: dsize,asize: asize,mode: mode,lsize: lsize,idsize: idsize,addr_step: addr_step)
     # end
 
 end

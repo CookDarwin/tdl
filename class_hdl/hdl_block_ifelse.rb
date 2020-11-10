@@ -182,6 +182,7 @@ end
 module ClassHDL
     class EnumStruct
         # attr_accessor :sdl_m
+        attr_accessor :belong_to_module
         def initialize(sdl_m,*args)
             args.each do |e|
                 unless e.is_a? String 
@@ -198,6 +199,7 @@ module ClassHDL
             end
             @args = args
             @sdl_m = sdl_m
+            @belong_to_module = sdl_m
             # @name = name
             
         end

@@ -1,7 +1,7 @@
 
 ## 添加 引入 sdl module
 def require_sdl(sdl_path)
-    basename = File.basename(sdl_path,".sv")
+    basename = File.basename(sdl_path,".rb")
     unless SdlModule.exist_module? basename
         ## 检测是不是全路径, 或当前路径查得到
         if File.exist? sdl_path

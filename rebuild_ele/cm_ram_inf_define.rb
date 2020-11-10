@@ -1,4 +1,4 @@
-class CMRamInf < TDLSpace::TdlBaseInterface
+class CMRamInf < TdlSpace::TdlBaseInterface
 
     hdl_name :cm_ram_inf
     modports :master,:slaver,:mirror,:master_A,:master_B,:slaver_A,:slaver_B

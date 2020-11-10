@@ -579,7 +579,7 @@ class DataInf_C ## signals in interface
     #                 @_array_chain_hash_ = {}
     #                 @_array_chain_hash_['valid'] = rel
     #             end
-    #             TDLSpace::ArrayChain.new(@_array_chain_hash_['valid'],[])
+    #             TdlSpace::ArrayChain.new(@_array_chain_hash_['valid'],[])
     #         end
     #     end
     # end

@@ -254,7 +254,7 @@ module ClassHDL
             if sub_type.is_a? StructMeta
                 @sub_type.struct_slots.each do |e|
                     obj.define_singleton_method(e.name) do 
-                        TDLSpace::ArrayChain.new("#{obj.name}.#{e.name}".to_nq)
+                        TdlSpace::ArrayChain.new("#{obj.name}.#{e.name}".to_nq)
                     end
                 end
             end
@@ -336,27 +336,27 @@ class SdlModule
 
     def >>(*args)
         str = "{>>{#{args.map{|e| e.to_s }.join(',')}}}"
-        TDLSpace::ArrayChain.new(str)
+        TdlSpace::ArrayChain.new(str)
     end
 
     def <<(*args)
         str = "{<<{#{args.map{|e| e.to_s }.join(',')}}}"
-        TDLSpace::ArrayChain.new(str)
+        TdlSpace::ArrayChain.new(str)
     end
 
     def logic_bind_(*args)
         str = "{#{args.map{|e| e.to_s }.join(',')}}"
-        TDLSpace::ArrayChain.new(str)
+        TdlSpace::ArrayChain.new(str)
     end
 
     def clog2(arg)
         str = "$clog2(#{arg.to_s})"
-        TDLSpace::ArrayChain.new(str)
+        TdlSpace::ArrayChain.new(str)
     end
 
     def bits(arg)
         str = "$bits(#{arg.to_s})"
-        TDLSpace::ArrayChain.new(str)
+        TdlSpace::ArrayChain.new(str)
     end
 
 end
@@ -364,10 +364,10 @@ end
 module ClassHDL
     class ClearSdlModule < SdlModule
         @@id_cnt = 0
-        def initialize
+        def initialize(name=nil)
             ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
                 @@allmodule << self
-                @module_name = "clear_board_sdlmodule_#{@@id_cnt}"
+                @module_name = name || "clear_board_sdlmodule_#{@@id_cnt}"
                 # @real_sv_path = File.join(@out_sv_path,"#{@module_name}.sv") if @out_sv_path
                 @dont_gen_sv = true
                 @port_clocks        = Hash.new
@@ -397,6 +397,9 @@ module ClassHDL
                 end
                 create_ghost
                 @@id_cnt += 1
+
+                @instanced_and_parent_module ||= Hash.new
+                @instance_and_children_module ||= Hash.new
             end
         end
 

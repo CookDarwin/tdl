@@ -1,5 +1,5 @@
 
-class DataInf < TDLSpace::TdlBaseInterface
+class DataInf < TdlSpace::TdlBaseInterface
 
     hdl_name :data_inf
     modports :master,:slaver,:mirror,:mirror_out

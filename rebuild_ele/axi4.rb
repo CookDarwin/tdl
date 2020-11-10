@@ -1,5 +1,5 @@
 # require_relative 'ele'
-class Axi4 < TDLSpace::TdlBaseInterface
+class Axi4 < TdlSpace::TdlBaseInterface
     BOTH = "BOTH"
     ONLY_READ  = "ONLY_READ"
     ONLY_WRITE = "ONLY_WRITE"
@@ -133,5 +133,9 @@ class Axi4 < TDLSpace::TdlBaseInterface
     end
 
     alias_method :copy,:inherited
+
+    def clock_reset_taps(def_clock_name,def_reset_name)
+        super(def_clock_name,def_reset_name,self.axi_aclk,self.axi_aresetn)
+    end
 
 end

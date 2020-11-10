@@ -15,7 +15,7 @@ class TestArrayChain < Test::Unit::TestCase
         sm.instance_exec(self) do |ts|
             DataInf_C().slaver   :ainf,dimension:[8,6,5]
             puts align_signal(ainf)
-            ts.assert_instance_of(TDLSpace::ArrayChain,ainf[0],"Array Chain Class Error")
+            ts.assert_instance_of(TdlSpace::ArrayChain,ainf[0],"Array Chain Class Error")
             ts.assert_equal(ainf[0][4][4,0].to_s,"ainf[0][4][4:0]".to_nq,"Array[0][4][4:0] Error")
             ts.assert_equal(ainf[3].to_s,"ainf[3]".to_nq,"Array[3] Error")
             ts.assert_instance_of(NqString,ainf[3].to_s,"返回ArrayChain类型不对")

@@ -30,7 +30,7 @@ class AxiStream
                 check_branch_num
             end 
 
-            if e.is_a? TDLSpace::ArrayChain
+            if e.is_a? TdlSpace::ArrayChain
                 if e.obj.is_a? AxiStream
                     @interconnect_up_streams << e
                     check_branch_num
@@ -105,7 +105,7 @@ axi_stream_inf #(.DSIZE(#{name}.DSIZE))  sub_#{(name)}[#{@interconnect_up_stream
     def sub_direct
         str = ""
         for i in 0...(@interconnect_up_streams.length)
-            if @interconnect_up_streams[i].is_a? TDLSpace::ArrayChain
+            if @interconnect_up_streams[i].is_a? TdlSpace::ArrayChain
                 slaver_name = @interconnect_up_streams[i]
             else  
                 slaver_name = @interconnect_up_streams[i].name

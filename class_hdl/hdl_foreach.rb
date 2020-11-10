@@ -31,15 +31,18 @@ class SdlModule
         end
         new_op = ClassHDL::BlockFOREACH.new
 
-        ClassHDL::AssignDefOpertor.with_new_assign_block(new_op) do |ab|
-            if cond.is_a? ClassHDL::OpertorChain
-                cond.slaver = true
-            end
-            ab.cond = cond
-            ab.flag = "i#{@@__foreach_index_cnt__}".to_nq
-            block.call(ab.flag)
+        ClassHDL::AssignDefOpertor.with_new_opertor do 
+            ClassHDL::AssignDefOpertor.with_new_assign_block(new_op) do |ab|
+                if cond.is_a? ClassHDL::OpertorChain
+                    cond.slaver = true
+                end
+                ab.cond = cond
+                ab.flag = "i#{@@__foreach_index_cnt__}".to_nq
+                block.call(ab.flag)
 
-        end
+            end
+        end 
+        
         ClassHDL::AssignDefOpertor.curr_assign_block.opertor_chains.push(new_op)
         ClassHDL::AssignDefOpertor.with_normal_opertor do 
             @@__foreach_index_cnt__ -= 1

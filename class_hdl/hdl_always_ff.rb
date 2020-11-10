@@ -86,6 +86,47 @@ module ClassHDL
             end
         end
     end
+
+    ## 添加测试用always 
+
+    class HDLAlwaysSIMBlock < HDLAlwaysFFBlock
+
+        def instance
+            str = []
+
+            pose_str = edge_instance('posedge',@posedges)
+            nege_str = edge_instance('negedge',@negedges)
+            pose_str.concat nege_str
+
+            str.push "always@(#{pose_str.join(",")}) begin "
+            opertor_chains.each do |op|
+                unless op.is_a? OpertorChain
+                    str.push op.instance(:assign).gsub(/^./){ |m| "    #{m}"}
+                else 
+                    unless op.slaver
+                        rel_str = ClassHDL.compact_op_ch(op.instance(:assign))
+                        str.push "    #{rel_str};"
+                    end
+                end
+                
+            end
+            str.push "end\n"
+            str.join("\n")
+        end
+    end
+
+    def self.AlwaysSIM(sdl_m: nil,posedge: [],negedge: [],&block)
+        ClassHDL::AssignDefOpertor.with_new_assign_block(ClassHDL::HDLAlwaysSIMBlock.new) do |ab|
+            ab.posedges = posedge
+            ab.negedges = negedge
+
+            AssignDefOpertor.with_rollback_opertors(:new,&block)
+            # return ClassHDL::AssignDefOpertor.curr_assign_block
+            AssignDefOpertor.with_rollback_opertors(:old) do
+                sdl_m.Logic_draw.push ab.instance
+            end
+        end
+    end
 end
 
 class SdlModule
@@ -107,7 +148,7 @@ class SdlModule
     end
 
     def Always_ff(posedge: nil,negedge: nil,&block)
-        ClassHDL::AlwaysFF(sdl_m: nil,posedge: posedge,negedge: negedge,&block)
+        ClassHDL::AlwaysFF(sdl_m: self,posedge: posedge,negedge: negedge,&block)
     end
 
     def always_ff(*args,&block)
@@ -126,5 +167,9 @@ class SdlModule
         end
 
         ClassHDL::AlwaysFF(sdl_m: self,posedge: posedge_list,negedge: negedge_list,&block)
+    end
+
+    def always_sim(posedge: nil,negedge: nil,&block)
+        ClassHDL::AlwaysSIM(sdl_m: self,posedge: posedge,negedge: negedge,&block)
     end
 end

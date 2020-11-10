@@ -60,7 +60,7 @@ class SdlInst
         elsif inst_port_hash.key? key
             ## 判断 接口类型是否一样
             # if @origin.send(key).is_a?(InfElm) && value.is_a?(InfElm)
-            if @origin.send(key).is_a?(TDLSpace::TdlBaseInterface) && value.is_a?(TDLSpace::TdlBaseInterface)
+            if @origin.send(key).is_a?(TdlSpace::TdlBaseInterface) && value.is_a?(TdlSpace::TdlBaseInterface)
                 if @origin.send(key).class != value.class 
                     raise TdlError.new("#{@origin.module_name} port type<#{@origin.send(key).class}> isnot same as #{value.name} <#{value.class}>")
                 else 
@@ -238,7 +238,7 @@ class SdlInst
         #     "axi_inf.#{ele.port}"
         # when ele.class == VideoInf then
         #     "video_native_inf.#{ele.port}"
-        when TDLSpace::TdlBaseInterface.subclass.include?(ele.class) then 
+        when TdlSpace::TdlBaseInterface.subclass.include?(ele.class) then 
             "#{ele.class.get_class_var('hdl_name')}.#{ele.modport_type}"
         else
             rel_str = inst_t0_methods(ele)
@@ -420,7 +420,7 @@ class SdlInstPortSugar < SdlInstSimplePortSugar
     @@ml.each do |e|
         define_method(e) do |*args|
             ## 例化端口合法性检测
-            if args[0].is_a?(TDLSpace::TdlBaseInterface) || args[0].is_a?(Logic)
+            if args[0].is_a?(TdlSpace::TdlBaseInterface) || args[0].is_a?(Logic)
                 raise TdlError.new("Port[#{e}] connect Error!!!")
             end
             return self
@@ -475,12 +475,12 @@ class SdlModule
         @instanced_and_parent_module ||= Hash.new
         if baseele.is_a? Parameter
             instanced_and_parent_module.each do |k_inst,v_module|
-                v_module.method(k_inst).call.inst_param_hash[baseele.name.to_s]  = nil
+                v_module.method(k_inst.inst_name).call.inst_param_hash[baseele.name.to_s]  = nil
             end
         else
             instanced_and_parent_module.each do |k_inst,v_module|
-                v_module.method(k_inst).call.inner_port_hash[baseele.name.to_s]  = baseele
-                v_module.method(k_inst).call.inst_port_hash[baseele.name.to_s]   = NqString.new("")
+                v_module.method(k_inst.inst_name).call.inner_port_hash[baseele.name.to_s]  = baseele
+                v_module.method(k_inst.inst_name).call.inst_port_hash[baseele.name.to_s]   = NqString.new("")
             end
 
         end
@@ -496,12 +496,13 @@ class SdlModule
             end
 
             sdlmodule = SdlModule.call_module(sdlmodule_name)
-            add_children_modules(inst_name:name,module_poit:sdlmodule)
+    
             if self.module_name.eql? sdlmodule.module_name
                 raise TdlError.new("SdlModule [#{@module_name}]cant instance itself ")
             end
             inst_obj = sdlmodule.instanced(name,self)
             inst_obj.belong_to_module = self
+            add_children_modules(inst_obj: inst_obj,module_poit:sdlmodule)
             define_ele(name,inst_obj)
             @sub_instanced << inst_obj
             if block_given?
@@ -535,19 +536,19 @@ class SdlModule
         end.join("\n")
     end
 
-    def add_children_modules(inst_name:nil,module_poit:nil)
-        inst_name = inst_name.to_s
+    def add_children_modules(inst_obj:nil,module_poit:nil)
+        # inst_name = inst_name.to_s
         @instance_and_children_module ||= Hash.new
-        @instance_and_children_module[inst_name] = module_poit
-        module_poit.add_parent_modules(inst_name:inst_name,module_poit:self)
+        @instance_and_children_module[inst_obj] = module_poit
+        module_poit.add_parent_modules(inst_obj:inst_obj,module_poit:self)
     end
 
     public
 
-    def add_parent_modules(inst_name:nil,module_poit:nil)
-        inst_name = inst_name.to_s
+    def add_parent_modules(inst_obj:nil,module_poit:nil)
+        # inst_name = inst_name.to_s
         @instanced_and_parent_module ||= Hash.new
-        @instanced_and_parent_module[inst_name] = module_poit
+        @instanced_and_parent_module[inst_obj] = module_poit
     end
 
     def call_instance(name)
@@ -555,4 +556,64 @@ class SdlModule
     end
 
 
+end
+
+class SdlModule
+    ## 获取模块的树状结构
+    ## 父 [self,[ [P0,inst-name], [P1,[P1-1,P1-2]] [P3, inst-name]] ]
+    def parents_inst_tree(collect=[],&block)
+        rels = []
+        # parent_rels = []
+        @instanced_and_parent_module.each do |k,v|
+            # ## 获取generate tree 
+            # if v.is_a? ClassHDL::GenerateBlock
+            #     dc = collect.dup
+            #     dc << v 
+            #     dc << v.belong_to_module
+            #     v.parents_inst_tree(dc,&block)
+            # elsif v.is_a? ClassHDL::ClearGenerateSlaverBlock
+            #     dc = collect.dup
+            #     dc << v.belong_to_module
+            #     dc << v.belong_to_module.belong_to_module
+            #     v.parents_inst_tree(dc,&block)
+            # end
+
+            # v.instance_variable_get("@sub_instanced").each do |sm|
+            v.instance_and_children_module.each do |ck,cv|
+                sm = ck
+                dc = collect.dup
+                if sm.origin == self 
+                    # rels << sm
+                    if v.instanced_and_parent_module.empty? 
+                        dc << sm 
+                        dc << v
+                        rels << dc
+                        yield dc if block_given?
+                    else
+                        dc << sm unless cv.is_a?(ClassHDL::ClearGenerateSlaverBlock)
+                        v.parents_inst_tree(dc,&block)
+                    end
+                end
+            end
+        end
+        rels 
+    end
+
+    ## 子 [self,[C0, [C1,[C1-1,C1-2]] C3]]
+    def children_inst_tree(collect=[],&block)
+        rels = []
+        # parent_rels = []
+        @sub_instanced.each do |sm|
+            dc = collect.dup
+            if sm.origin.instance_and_children_module.empty? 
+                dc << sm
+                rels << dc
+                yield dc if block_given?
+            else 
+                dc << sm
+                sm.origin.children_inst_tree(dc,&block)
+            end
+        end
+        rels 
+    end
 end

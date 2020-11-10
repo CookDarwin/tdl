@@ -1,5 +1,5 @@
 # require_relative 'ele'
-class AxiLite < TDLSpace::TdlBaseInterface
+class AxiLite < TdlSpace::TdlBaseInterface
 
 
     attr_accessor :id,:dsize,:asize,:port,:ghost

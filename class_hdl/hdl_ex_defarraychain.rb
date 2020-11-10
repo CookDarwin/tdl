@@ -16,7 +16,7 @@ DefArrayChain:
         - PortDefAxi4_ArrayChain
 """
 
-module TDLSpace 
+module TdlSpace 
 
     module PortDef 
 
@@ -225,7 +225,7 @@ class SdlModule
     def port 
 
         # return ClassHDL::PortDefChain.new(self)
-        return TDLSpace::DefPortArrayChain.new(self)
+        return TdlSpace::DefPortArrayChain.new(self)
     end
 
 end

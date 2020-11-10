@@ -160,12 +160,12 @@ class AutoGenSdl
             end
         }
 
-        TDLSpace::TdlBaseInterface.subclass.each do |sc|
+        TdlSpace::TdlBaseInterface.subclass.each do |sc|
             # super(port_array,rep,"axi_stream_inf",up_stream_rep)
             if sc.const_defined?(:PORT_REP) && sc.const_defined?(:UP_STREAM_REP)
                 # puts sc.get_class_var('hdl_name'),sc::UP_STREAM_REP,sc
                 
-                @port_str = TDLSpace::TdlBaseInterface.parse_ports(@port_str,sc::PORT_REP,sc.get_class_var('hdl_name'),sc::UP_STREAM_REP,sc.get_class_var('hdl_name'),&inf_proc)
+                @port_str = TdlSpace::TdlBaseInterface.parse_ports(@port_str,sc::PORT_REP,sc.get_class_var('hdl_name'),sc::UP_STREAM_REP,sc.get_class_var('hdl_name'),&inf_proc)
             end
         end
 
@@ -198,7 +198,7 @@ class AutoGenSdl
     end
 
     def vector_to_size(v)
-        rep = /\[\s*(?<h>\S+)\s*:\s*(?<l>\S+)\s*\]/
+        rep = /\[\s*(?<h>.+)\s*:\s*(?<l>.+)\s*\]/
         mv = v.match(rep)
         if mv
             if (mv["h"] =~ /^\d+$/) && (mv["l"] =~ /^\d+$/)
@@ -273,8 +273,6 @@ class AutoGenSdl # add auto_path
     end
 
 end
-
-# a = AutoGenTdl.new('..\..\axi\AXI_stream\data_interface\data_inf_ticktock.sv','..\..\tdl\data_inf')
 
 # puts a.parse_params
 # puts a.parse_normal_ports

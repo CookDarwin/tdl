@@ -1,4 +1,4 @@
-module TDLSpace
+module TdlSpace
 
     class ArrayChainSignalMethod
         attr_reader :name
@@ -206,7 +206,7 @@ class BaseElm
                             
                             @_array_chain_hash_[name.to_s] = rel
                         end
-                        TDLSpace::ArrayChain.new(@_array_chain_hash_[name.to_s],[])
+                        TdlSpace::ArrayChain.new(@_array_chain_hash_[name.to_s],[])
                     end
                 end
             end
@@ -478,7 +478,7 @@ class InfElm
 
         return signal if @dimension.empty?
         
-        TDLSpace::ArrayChain.new(self,a,b)
+        TdlSpace::ArrayChain.new(self,a,b)
     end
 
     def self.same_name_socket(way,mix,inf_array,base_new_inf=nil,belong_to_module=nil)

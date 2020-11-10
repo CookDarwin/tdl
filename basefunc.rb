@@ -327,3 +327,12 @@ def rollback_methods(class_obj,*methods_nams)
     end
 end
 
+### 用于生成随机数
+$__name_random_index__ = (0...2000).to_a.shuffle(random: Random.new(1) ).map{|e| e.to_s }
+$__name_random_index_ii__ = 0
+
+def globle_random_name_flag(flag='R')
+    rel = $__name_random_index__[$__name_random_index_ii__]
+    $__name_random_index_ii__ += 1
+    "#{flag}#{rel}"
+end

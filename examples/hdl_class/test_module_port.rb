@@ -30,10 +30,10 @@ TdlBuild.test_module_port(File.join(__dir__,"tmp")) do
 
     ### ------------------------------------ ##
     # port.data_inf
-    ## 返回 TDLSpace::DefPortEleBaseArrayChain
+    ## 返回 TdlSpace::DefPortEleBaseArrayChain
 
     # port.data_inf.slaver
-    ## 调用 TDLSpace::DefPortEleBaseArrayChain method_missing
+    ## 调用 TdlSpace::DefPortEleBaseArrayChain method_missing
 
     test_module_port_sub.test_module_port_sub_inst do |h|
         # puts h.port.data_inf.slaver.test_data_inf.

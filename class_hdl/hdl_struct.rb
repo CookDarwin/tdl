@@ -157,7 +157,7 @@ module ClassHDL
 
         def [](a)
             if dimension
-                return TDLSpace::ArrayChain.new(self,[a])
+                return TdlSpace::ArrayChain.new(self,[a])
             else  
                 raise TdlError.new "#{@name} dimenson is nil "
             end
@@ -170,7 +170,7 @@ module ClassHDL
                 self.define_singleton_method(e.name) do 
                     # RedefOpertor.with_normal_operators do
                     ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
-                        TDLSpace::ArrayChain.new("#{@name}.#{e.to_s}".to_nq)
+                        TdlSpace::ArrayChain.new("#{@name}.#{e.to_s}".to_nq)
                     end
                 end
             end

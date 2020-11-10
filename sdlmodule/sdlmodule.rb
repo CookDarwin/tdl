@@ -206,6 +206,9 @@ class SdlModule
         if block_given?
             yield(self)
         end
+
+        @instanced_and_parent_module ||= Hash.new
+        @instance_and_children_module ||= Hash.new
     end
 
     public

@@ -1,5 +1,5 @@
 # require_relative 'ele'
-class AxiStream < TDLSpace::TdlBaseInterface
+class AxiStream < TdlSpace::TdlBaseInterface
 
     hdl_name :axi_stream_inf,:axis
     modports :master,:slaver,:mirror,:mirror_out,:out_mirror
@@ -52,7 +52,7 @@ class AxiStream < TDLSpace::TdlBaseInterface
     def inherited(name: nil ,clock: nil,reset: nil,dsize: nil,freqM: nil,dimension:[])
         a = nil 
         unless name 
-            name = "#{inst_name}_inherited#{rand(1024)}"
+            name = "#{inst_name}_inherited#{globle_random_name_flag()}"
         end
         ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
             append_name = name_copy(name)
@@ -78,7 +78,7 @@ class AxiStream < TDLSpace::TdlBaseInterface
 
     ## =======================
     def self.leave_empty(curr_type: :master,dsize:8,clock:"",reset:"",belong_to_module:nil)
-        nc = belong_to_module.axi_stream_inf(dsize:dsize,clock:clock,reset:reset) - "empty_axis_#{rand(2048)}"
+        nc = belong_to_module.axi_stream_inf(dsize:dsize,clock:clock,reset:reset) - "empty_axis_#{globle_random_name_flag()}"
         # puts belong_to_module.module_name
         if curr_type.to_sym == :slaver
             # self.axis_master_empty(master:nc)
@@ -99,7 +99,7 @@ class AxiStream < TDLSpace::TdlBaseInterface
 
     def branch(name: nil,clock:@clock,reset:@reset,dsize:@dsize,freqM:nil)
         unless name 
-            name = "#{inst_name}_branch#{rand(1024)}"
+            name = "#{inst_name}_branch#{globle_random_name_flag()}"
         end
         a =  inherited(name: name,clock: clock,reset: reset,dsize: dsize,freqM: freqM)
         self << a

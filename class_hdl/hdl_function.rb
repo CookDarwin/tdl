@@ -13,7 +13,7 @@ module ClassHDL
             if @func_inst.return_type.is_a? StructMeta
                 @func_inst.return_type.struct_slots.each do |e|
                     self.define_singleton_method(e.name) do 
-                        TDLSpace::ArrayChain.new("#{@func_inst.name}.#{e.name}".to_nq)
+                        TdlSpace::ArrayChain.new("#{@func_inst.name}.#{e.name}".to_nq)
                     end
                 end
             end

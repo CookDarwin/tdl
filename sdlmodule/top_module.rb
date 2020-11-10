@@ -4,6 +4,7 @@ class TopModule < SdlModule
     attr_accessor :techbench,:sim,:constraint
 
     def initialize(name:"tdlmodule",out_sv_path:nil)
+        @@curr_top_module = self
         # set sim env
         @sim = TopModule.sim
         @out_sv_path = out_sv_path
@@ -25,6 +26,9 @@ class TopModule < SdlModule
         rtl_top_module
     end
 
+    def self.current
+        @@curr_top_module
+    end 
 
     def pins
         @pins_params
@@ -166,6 +170,9 @@ endmodule\n"
 
     def gen_sv_module_verb
         mix_itegrations
+        ## 添加测试用例 实例化
+        _exec_add_test_unit()
+        
         gen_sv_module
     end
 
@@ -228,49 +235,50 @@ endmodule\n"
         end
     end
 
-    def self.root_ref_signal(basele,&block)   # return proc becuse top module may not be created
-        if basele.is_a? BaseElm
-            Proc.new do
-                @@root_ref_array = []
+    # def self.root_ref_signal(basele,&block)   # return proc becuse top module may not be created
+    #     if basele.is_a? BaseElm
+    #         Proc.new do
+    #             @@root_ref_array = []
 
-                unless block_given?
-                    self.recur_ref(basele.belong_to_module,basele.signal)
-                else
-                    self.recur_ref(basele.belong_to_module,yield(basele))
-                end
+    #             unless block_given?
+    #                 self.recur_ref(basele.belong_to_module,basele.signal)
+    #             else
+    #                 self.recur_ref(basele.belong_to_module,yield(basele))
+    #             end
 
-                if @@root_ref_array.any?
-                    @@root_ref_array.first
-                else
-                    NqString.new("")
-                end
-            end
-        else
-            basele.to_s
-        end
-    end
+    #             if @@root_ref_array.any?
+    #                 @@root_ref_array.first
+    #             else
+    #                 NqString.new("")
+    #             end
+    #         end
+    #     else
+    #         raise TdlError.new("#{basele} is a #{basele.class} . Type ERROR")
+    #         basele.to_s
+    #     end
+    # end
 
-    def self.root_ref_inst(sub_inst,port_key)   # return proc becuse top module may not be created
-        unless sub_inst.is_a? SdlInst
-            raise TdlError.new("[KEY:#{port_key}]root_ref_inst of #{@module_name} must be a SdlInst")
-        end
-        Proc.new do
-            basele = sub_inst[port_key]
-            if basele.is_a? BaseElm
-                @@root_ref_array = []
-                self.recur_ref(basele.belong_to_module,basele.signal)
-                if @@root_ref_array.any?
-                    @@root_ref_array.first
-                else
-                    basele.to_s
-                end
-            elsif basele.is_a? Proc
-                basele.call
-            else
-                basele
-            end
-        end
-    end
+    # def self.root_ref_inst(sub_inst,port_key)   # return proc becuse top module may not be created
+    #     unless sub_inst.is_a? SdlInst
+    #         raise TdlError.new("[KEY:#{port_key}]root_ref_inst of #{@module_name} must be a SdlInst")
+    #     end
+    #     Proc.new do
+    #         basele = sub_inst[port_key]
+    #         if basele.is_a? BaseElm
+    #             @@root_ref_array = []
+    #             self.recur_ref(basele.belong_to_module,basele.signal)
+    #             if @@root_ref_array.any?
+    #                 @@root_ref_array.first
+    #             else
+    #                 basele.to_s
+    #             end
+    #         elsif basele.is_a? Proc
+    #             basele.call
+    #         else
+    #             basele
+    #         end
+    #     end
+    # end
 
     # def self.root_ref_proc(block=nil)   # return proc becuse top module may not be created
     #     Proc.new do
@@ -294,31 +302,29 @@ endmodule\n"
     #     end
     # end
 
-    def self.root_ref_signals(basele)   # return proc becuse top module may not be created
-        if basele is_a? BaseElm
-            Proc.new do
-                @@root_ref_array = []
-                self.recur_ref(basele.belong_to_module,basele.signal)
-                @@root_ref_array
-            end
-        else
-            Proc.new { basele }
-        end
-    end
+    # def self.root_ref_signals(basele)   # return proc becuse top module may not be created
+    #     if basele is_a? BaseElm
+    #         Proc.new do
+    #             @@root_ref_array = []
+    #             self.recur_ref(basele.belong_to_module,basele.signal)
+    #             @@root_ref_array
+    #         end
+    #     else
+    #         Proc.new { basele }
+    #     end
+    # end
 
-    def self.recur_ref(sdlmodule,collect_str)
-        if sdlmodule.is_a? TopModule
-            @@root_ref_array << "$root.#{sdlmodule.techbench.module_name}.#{sdlmodule.instanced_and_parent_module.keys.first}.#{collect_str}"
-        else
-            return nil unless sdlmodule.instanced_and_parent_module
-            sdlmodule.instanced_and_parent_module.each do |k_inst,v_module|
-                next_collect_str = "#{k_inst}.#{collect_str}"
-                self.recur_ref(v_module,next_collect_str)
-            end
-
-
-        end
-    end
+    # def self.recur_ref(sdlmodule,collect_str)
+    #     if sdlmodule.is_a? TopModule
+    #         @@root_ref_array << "$root.#{sdlmodule.techbench.module_name}.#{sdlmodule.instanced_and_parent_module.keys.first}.#{collect_str}"
+    #     else
+    #         return nil unless sdlmodule.instanced_and_parent_module
+    #         sdlmodule.instanced_and_parent_module.each do |k_inst,v_module|
+    #             next_collect_str = "#{k_inst}.#{collect_str}"
+    #             self.recur_ref(v_module,next_collect_str)
+    #         end
+    #     end
+    # end
 
     def self.define_global(name,default_value)
         # RedefOpertor.with_normal_operators do
@@ -380,6 +386,8 @@ class TopModule
     end
 
     def link_eval
+        @_itgt_collect_ ||= []
+        
         @_itgt_collect_.each do |i|
             i.link_eval
         end
@@ -400,3 +408,86 @@ class TopModule
 
     end
 end
+
+## 添加 missing
+
+class TopModule
+
+    def self.method_missing(method,*args,&block)
+        
+        sdlm = TopModule.new(name: method,out_sv_path: args[0])
+        @@package_names ||= []
+        sdlm.head_import_packages = []
+        sdlm.head_import_packages += @@package_names
+
+        @@package_names.each do |e|
+            sdlm.require_package(e,false) if e
+        end
+        @@package_names = []
+        sdlm.instance_exec(&block)
+
+        if args[0] && File.exist?(args[0])
+            # sdlm.gen_sv_module
+            sdlm.gen_sv_module_verb
+            sdlm.create_xdc
+        else 
+            sdlm.origin_sv = true 
+        end
+        sdlm
+    end
+    ## 定义模块时添加 package
+
+    def self.with_package(*args)
+        @@package_names += args
+        return self 
+    end
+end
+
+## 給TopModule 添加单元测试 方法
+module TdlSpace 
+    class TopModuleTestUnitRef
+
+        def collect_unit(tu)
+            @__collect_units__ ||= []
+            @__collect_units__ << tu 
+        end
+
+        def echo_units
+            @__collect_units__ ||= []
+            index = 1
+    
+            rels = []
+            @__collect_units__.each do |ue|
+                tp_str = ue.origin.dve_wave_signals.map do |ele|  
+                    "     ->#{TdlTestPoint.inst_collect.index(ele.tp_instance)+1}< :: #{ele.tp_instance.name} || #{ele.tp_instance.file}:#{ele.tp_instance.line}" 
+                end.join("\n")
+
+                rels << "  [#{index}]  #{ue.origin.module_name} ::<TestPoints> \n#{tp_str}"
+                index += 1
+            end
+            rels.join("\n")
+        end
+
+        def dve_wave(name: '', signals: [])
+            return unless signals
+            @_dev_wave_ ||= Hash.new 
+            @_dev_wave_[name.to_s] = signals    ## Signal is TdlTestPoint
+        end
+
+        def gen_dve_tcl(filename)
+            File.open(filename,'w') do |f|
+                f.puts TdlSpace.gen_dev_wave_tcl(@_dev_wave_ || Hash.new)
+            end
+        end
+
+    end
+end 
+
+class TopModule
+    def test_unit
+        @__test_unit__ ||= TdlSpace::TopModuleTestUnitRef.new
+    end
+
+end
+
+

@@ -56,8 +56,8 @@ end
         end
     
         define_singleton_method(:init_exec) do |str|
-            @_init_master_draw_exec_str_ ||= []
-            @_init_master_draw_exec_str_ << init_tap_draw("#{str.to_s};\n")
+            @_master_draw_exec_str_ ||= []
+            @_master_draw_exec_str_ << init_tap_draw("#{str.to_s};\n")
         end
     
         # def stream_exec(delay:"#(10us)",str:"")

@@ -142,4 +142,6 @@ class SdlModule
     def initial_exec(str)
         ClassHDL::AssignDefOpertor.curr_assign_block.opertor_chains.push(ClassHDL::OpertorChain.new([str.to_s.to_nq]))
     end
+
+    alias_method :always_sim_exec, :initial_exec
 end

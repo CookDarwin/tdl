@@ -15,9 +15,10 @@ module ClassHDL
     end
 
     class GenerateBlock <  ClearSdlModule
+        attr_accessor :block_index
         def initialize(belong_to_module)
             @belong_to_module = belong_to_module
-            super()
+            super("genblk#{globle_random_name_flag()}")
         end
 
 
@@ -45,6 +46,12 @@ module ClassHDL
                 end
                 # yield
                 tmp_sm = ClearGenerateSlaverBlock.new(self)
+
+                tmp_sm.module_name = "generate_sub_block_#{self.block_index}"
+                inst_obj = tmp_sm.instanced("genblk#{self.block_index}",tmp_sm)
+                inst_obj.belong_to_module = tmp_sm
+                add_children_modules(inst_obj:inst_obj ,module_poit: tmp_sm)
+
                 tmp_sm.instance_exec(&block)
                 ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
                     body_str = tmp_sm.instance_draw + tmp_sm.vars_exec_inst
@@ -65,6 +72,11 @@ module ClassHDL
                 end
                 # yield
                 tmp_sm = ClearGenerateSlaverBlock.new(self)
+                tmp_sm.module_name = "generate_sub_block_#{self.block_index}"
+                inst_obj = tmp_sm.instanced("genblk#{self.block_index}",tmp_sm)
+                inst_obj.belong_to_module = tmp_sm
+                add_children_modules(inst_obj:inst_obj ,module_poit: tmp_sm)
+
                 tmp_sm.instance_exec(&block)
                 ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
                     body_str = tmp_sm.instance_draw + tmp_sm.vars_exec_inst
@@ -81,6 +93,11 @@ module ClassHDL
                 head_str = "else begin\n"
                 # yield
                 tmp_sm = ClearGenerateSlaverBlock.new(self)
+                tmp_sm.module_name = "generate_sub_block_#{self.block_index}"
+                inst_obj = tmp_sm.instanced("genblk#{self.block_index}",tmp_sm)
+                inst_obj.belong_to_module = tmp_sm
+                add_children_modules(inst_obj:inst_obj ,module_poit: tmp_sm)
+
                 tmp_sm.instance_exec(&block)
                 ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
                     body_str = tmp_sm.instance_draw + tmp_sm.vars_exec_inst
@@ -97,7 +114,7 @@ module ClassHDL
         def initialize(belong_to_module)
             @belong_to_module = belong_to_module
             # @dont_gen_sv = true
-            super()
+            super("slavergenblk#{rand(1024)}")
         end
 
         def method_missing(name,*args,&block)
@@ -126,9 +143,21 @@ class SdlModule
     def generate(*args,&block)
         head_str = ""
         index = 0
-
+        @__generate_blocks__ ||= []
         tmp_sm = ClassHDL::GenerateBlock.new(self)
         kk_args = []
+        @__generate_blocks__ << tmp_sm
+        tmp_sm.block_index = @__generate_blocks__.size
+
+        tmp_sm.module_name = "generate_block_#{tmp_sm.block_index}"
+        if args.empty? 
+            inst_obj = tmp_sm.instanced("genblk#{tmp_sm.block_index}",tmp_sm)
+        else 
+            inst_obj = tmp_sm.instanced("genblk#{tmp_sm.block_index}[0]",tmp_sm) ## 只取第一个
+        end
+        inst_obj.belong_to_module = tmp_sm
+
+        add_children_modules(inst_obj:inst_obj ,module_poit: tmp_sm)
 
         args.each_index do |e|
             new_op = ClassHDL::OpertorChain.new 

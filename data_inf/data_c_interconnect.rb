@@ -78,8 +78,9 @@ data_c_direct data_c_direct_#{name}_instMM(
 
     def noaddr_interconnect_draw
 "
-data_c_pipe_intc_M2S_verc #(
-    .PRIO   (\"BEST_ROBIN\"),   //BEST_ROBIN BEST_LAST ROBIN LAST WAIT_IDLE FORCE_ROBIN
+//data_c_pipe_intc_M2S_verc #(
+data_c_pipe_intc_M2S_best_last #(
+//   .PRIO   (\"BEST_ROBIN\"),   //BEST_ROBIN BEST_LAST ROBIN LAST WAIT_IDLE FORCE_ROBIN
     .NUM    (#{@interconnect_up_streams.length})
 )#{name}_M2S_noaddr_inst(
 /*  input [NUM-1:0]    */         .last     ('1),             //ctrl prio

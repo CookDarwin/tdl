@@ -1,6 +1,6 @@
 
 
-class DataInf_C < TDLSpace::TdlBaseInterface
+class DataInf_C < TdlSpace::TdlBaseInterface
 
     hdl_name :data_inf_c,:data_c
     modports :master,:slaver,:mirror,:mirror_out,:out_mirror
@@ -37,7 +37,7 @@ class DataInf_C < TDLSpace::TdlBaseInterface
     def inherited(name: nil,clock: nil,reset: nil,dsize: nil,freqM: nil,dimension:[])
         a = nil 
         unless name 
-            name = "#{inst_name}_inherited#{rand(1024)}"
+            name = "#{inst_name}_inherited#{globle_random_name_flag()}"
         end
         ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do 
             append_name = name_copy(name)
@@ -67,7 +67,7 @@ class DataInf_C < TDLSpace::TdlBaseInterface
 
     def branch(name: nil,clock:@clock,reset:@reset,dsize:@dsize,freqM:nil)
         unless name 
-            name = "#{inst_name}_branch#{rand(1024)}"
+            name = "#{inst_name}_branch#{globle_random_name_flag()}"
         end
         a =  inherited(name: name,clock: clock,reset: reset,dsize: dsize,freqM: freqM)
         self << a

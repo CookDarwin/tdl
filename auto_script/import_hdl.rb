@@ -9,7 +9,7 @@ def require_hdl(hdl_path)
             if hdl_path !~ /[\/|\\]/
                 rel = find_first_hdl_path(hdl_path)
                 unless rel 
-                    raise TdlError.new("Can find <#{hdl_path}> in tdl paths !!!")    
+                    raise TdlError.new("Cant find <#{hdl_path}> in tdl paths !!!")    
                 end
 
                 AutoGenSdl.new(rel,File.join(__dir__,"tmp")).auto_rb

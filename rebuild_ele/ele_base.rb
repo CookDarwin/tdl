@@ -1,5 +1,5 @@
 
-module TDLSpace 
+module TdlSpace 
 
     module VarElemenAttr
 
@@ -52,7 +52,7 @@ module TDLSpace
                     define_method(name) do |args={}|
                         hash = args || {}
                         hash[:belong_to_module] = self
-                        rel = TDLSpace::DefEleBaseArrayChain.new(hash)
+                        rel = TdlSpace::DefEleBaseArrayChain.new(hash)
                         rel.tclass = ele_class
                         return rel
                     end
@@ -64,9 +64,9 @@ module TDLSpace
 
                 _self = self
 
-                TDLSpace::DefPortArrayChain.class_exec(name,self) do |name,ele_class|
+                TdlSpace::DefPortArrayChain.class_exec(name,self) do |name,ele_class|
                     define_method(name) do 
-                        rel = TDLSpace::DefPortEleBaseArrayChain.new(ele_class,belong_to_module)
+                        rel = TdlSpace::DefPortEleBaseArrayChain.new(ele_class,belong_to_module)
                         return rel
                     end
 
@@ -151,7 +151,7 @@ module TDLSpace
              self.class_exec(tdl_key) do |tdl_key|
                 define_method('clock') do 
                     rel = self.instance_variable_get("@_#{tdl_key}_")
-                    rel || TDLSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
+                    rel || TdlSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
                 end
 
                 define_method("clock=") do |arg|
@@ -167,7 +167,7 @@ module TDLSpace
              self.class_exec(tdl_key) do |tdl_key|
                 define_method('reset') do 
                     rel = self.instance_variable_get("@_#{tdl_key}_")
-                    rel || TDLSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
+                    rel || TdlSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
                 end
 
                 define_method("reset=") do |arg|
@@ -196,7 +196,7 @@ module TDLSpace
             self.class_exec(tdl_key) do |tdl_key|
                 define_method(tdl_key) do 
                     rel = self.instance_variable_get("@_#{tdl_key}_") || default_value
-                    rel || TDLSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
+                    rel || TdlSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
                 end
 
                 define_method("#{tdl_key}=") do |arg|
@@ -211,7 +211,7 @@ module TDLSpace
                 _io_map(e,e,nil,'sdata',nil)
                 self.class_exec(e) do |e|
                     define_method(e) do 
-                        TDLSpace::ArrayChain.new("#{self.inst_name}.#{e}")
+                        TdlSpace::ArrayChain.new("#{self.inst_name}.#{e}")
                     end
                 end
             end
@@ -221,7 +221,7 @@ module TDLSpace
             _io_map(name,name,nil,'pdata',dimension)
             self.class_exec(name) do |e|
                 define_method(e) do 
-                    TDLSpace::ArrayChain.new("#{self.inst_name}.#{e}")
+                    TdlSpace::ArrayChain.new("#{self.inst_name}.#{e}")
                 end
             end
         end
@@ -370,7 +370,7 @@ module TDLSpace
                     e.slaver = true
                 end 
             end
-            TDLSpace::ArrayChain.new(self,a)
+            TdlSpace::ArrayChain.new(self,a)
         end
 
         def instance(exp_len: nil)
@@ -532,7 +532,7 @@ module TDLSpace
     end
 end
 
-module TDLSpace
+module TdlSpace
     class TdlBaseInterface
         extend VarElemenAttr
         include VarElemenCore
@@ -679,7 +679,7 @@ module TDLSpace
 end 
 
 ## 定义语法糖
-module TDLSpace 
+module TdlSpace 
     ## 只能用于接口，dimension 和 DSIZE 并不共享空间
     class DefEleBaseArrayChain < DefArrayChain 
         # DefArrayChain in sdlmodule_arratchain
@@ -769,7 +769,7 @@ module TDLSpace
 
             hash = args[0] || {}
             hash[:belong_to_module] = @sdlmodule
-            rel = TDLSpace::DefEleBaseArrayChain.new(hash)
+            rel = TdlSpace::DefEleBaseArrayChain.new(hash)
             rel.tclass = @ele_class
             rel.modport_type = name
             return rel
@@ -778,7 +778,7 @@ module TDLSpace
     end
 end
 
-class TestAxiStream < TDLSpace::TdlBaseInterface
+class TestAxiStream < TdlSpace::TdlBaseInterface
 
     hdl_name :text_axi_stream_inf
     modports :master,:slaver,:mirror,:mirror_out

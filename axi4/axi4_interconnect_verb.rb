@@ -219,7 +219,7 @@ class Axi4
                     mode_str = "ONLY_READ_to_BOTH"
                 end
                 # Axi4.axi4_direct_a1(mode:mode_str,slaver:lo,master:"#{sub_name}[#{index}]",belong_to_module:belong_to_module)
-                belong_to_module.Instance('axi4_direct_B1',"axi4_direct_a1_long_to_wide_#{sub_name}_#{rand(1024)}") do |h|
+                belong_to_module.Instance('axi4_direct_B1',"axi4_direct_a1_long_to_wide_#{sub_name}_#{globle_random_name_flag()}") do |h|
                     # h.param.MODE    mode_str    #//ONLY_READ to BOTH,ONLY_WRITE to BOTH,BOTH to BOTH,BOTH to ONLY_READ,BOTH to ONLY_WRITE
                     h.slaver        lo
                     h.master        "#{sub_name}[#{index}]".to_nq

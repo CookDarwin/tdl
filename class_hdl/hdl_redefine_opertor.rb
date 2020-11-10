@@ -396,6 +396,12 @@ module ClassHDL
     end
 end
 
+class SdlModule 
+    def rubyOP(&block)
+        ClassHDL::AssignDefOpertor.with_rollback_opertors(:old,&block )
+    end
+end
+
 class String
     include ClassHDL::AssignDefOpertor
 
@@ -472,7 +478,7 @@ class BaseElm
                             
                             @_array_chain_hash_[name.to_s] = rel
                         end
-                        TDLSpace::ArrayChain.new(@_array_chain_hash_[name.to_s],[])
+                        TdlSpace::ArrayChain.new(@_array_chain_hash_[name.to_s],[])
                     end
                 end
             end
@@ -516,7 +522,7 @@ class SignalElm
     end
 end
 
-module TDLSpace
+module TdlSpace
     class ArrayChain
         def [](a,b=false)
             if a.is_a? Range
@@ -590,7 +596,7 @@ class Integer
     include ClassHDL::AssignDefOpertor
 end
 
-module TDLSpace
+module TdlSpace
     module DefOpertor
 
         OP_SYMBOLS = %w{+ - * / % > < >= <= == != << | &}
@@ -610,9 +616,9 @@ module TDLSpace
     end
 end
 
-module TDLSpace
+module TdlSpace
     class ArrayChain
-        include TDLSpace::DefOpertor
+        include TdlSpace::DefOpertor
         include ClassHDL::AssignDefOpertor
     end 
 end
