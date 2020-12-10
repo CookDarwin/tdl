@@ -5,13 +5,15 @@ class AxiStream < TdlSpace::TdlBaseInterface
     modports :master,:slaver,:mirror,:mirror_out,:out_mirror
     param_map :dsize,'DSIZE',18 ## <tdl_key><hdl_key><default_value>
     param_map :freqM,'FreqM',1.0
+    param_map :usize,'USIZE',1
     clock_io_map :aclk,:aclk,100 ## <tdl_key><hdl_key><default_freqM>
     reset_io_map :aresetn,:aresetn
     _io_map('aclken','aclken',1.b1,'other',nil)
-    sdata_maps :axis_tvalid,:axis_tready,:axis_tuser,:axis_tlast
+    sdata_maps :axis_tvalid,:axis_tready,:axis_tlast
     pdata_map   :axis_tdata,[:dsize]
     pdata_map   :axis_tkeep,[]
     pdata_map   :axis_tcnt
+    pdata_map   :axis_tuser
 
     # def initialize(name: "test_axis",clock: nil,reset: nil,dsize: nil,port: false,dimension: [],freqM: nil,belong_to_module: nil)
     #     super belong_to_module
@@ -41,8 +43,16 @@ class AxiStream < TdlSpace::TdlBaseInterface
         axis_tvalid.to_s.concat(" && ").concat(axis_tready.to_s).to_nq
     end
 
+    def array_chain_vld_rdy_inst(pre_str)
+        "(#{pre_str}.axis_tvalid && #{pre_str}.axis_tready )".to_nq
+    end
+
     def vld_rdy_last
         axis_tvalid.to_s.concat(" && ").concat(axis_tready.to_s).concat(" && ").concat(axis_tlast.to_s).to_nq
+    end
+
+    def array_chain_vld_rdy_last_inst(pre_str)
+        "(#{pre_str}.axis_tvalid && #{pre_str}.axis_tready && #{pre_str}.axis_tlast)".to_nq
     end
 
     def clock_reset_taps(def_clock_name,def_reset_name)

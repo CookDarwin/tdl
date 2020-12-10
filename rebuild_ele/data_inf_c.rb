@@ -34,6 +34,10 @@ class DataInf_C < TdlSpace::TdlBaseInterface
         # valid & ready
     end
 
+    def array_chain_vld_rdy_inst(pre_str)
+        "(#{pre_str}.valid && #{pre_str}.ready)".to_nq
+    end
+
     def inherited(name: nil,clock: nil,reset: nil,dsize: nil,freqM: nil,dimension:[])
         a = nil 
         unless name 

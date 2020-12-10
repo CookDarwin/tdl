@@ -1,8 +1,7 @@
 class Integer
 
     def method_missing(method,arg=nil)
-
-        if method.to_s =~ /s?[h|d]\d+/i || method.to_s =~ /s?[b](0|1)+/i || method.to_s =~ /s?[h][\d][\d|a-f]+/i
+        if method.to_s =~ /^s?[h|d]\d+$/i || method.to_s =~ /^s?[b](0|1)+$/i || method.to_s =~ /^s?[h][\d]?[\d|a-f]+$/i
             if self.nonzero?
                 return "#{self.to_s}'#{method}".to_nq
             else 

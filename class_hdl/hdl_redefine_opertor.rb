@@ -555,18 +555,24 @@ module TdlSpace
         def to_s
             ClassHDL::AssignDefOpertor.with_rollback_opertors(:old) do
                 str = ""
+                xstr = false
                 chain.each do |e|
                     unless e.is_a? ArrayChainSignalMethod
                         str += "[#{e.to_s}]"
                     else 
-                        str += ".#{e.name.to_s}"
+                        if (e.name.to_s == "vld_rdy" || e.name.to_s == "vld_rdy_last") && ( obj.is_a?(AxiStream) || obj.is_a?(DataInf_C) )
+                            xstr = obj.public_send("array_chain_#{e.name.to_s}_inst",obj.to_s + chain[0, chain.size-1].map{|x| "[#{x}]"}.join(''))                            
+                        else 
+                            str += ".#{e.name.to_s}"
+                        end
                     end
                 end
                 if @end_slice
                     str += "[#{@end_slice[0]}:#{@end_slice[1]}]"
                 end
 
-                "#{obj.to_s}#{str}"
+                xstr || "#{obj.to_s}#{str}"
+
             end
         end
 

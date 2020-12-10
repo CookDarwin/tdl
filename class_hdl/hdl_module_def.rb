@@ -30,6 +30,33 @@ class TdlBuild
     end
 end
 
+# class TopBuild < TdlBuild
+#     # return ClassHDL::AnonyModule.new
+#     def self.method_missing(method,*args,&block)
+        
+#         sdlm = TopModule.new(name: method,out_sv_path: args[0])
+#         @@package_names ||= []
+#         sdlm.head_import_packages = []
+#         sdlm.head_import_packages += @@package_names
+
+#         @@package_names.each do |e|
+#             sdlm.require_package(e,false) if e
+#         end
+#         @@package_names = []
+#         sdlm.instance_exec(&block)
+
+#         if args[0] && File.exist?(args[0])
+#             # sdlm.gen_sv_module
+#             sdlm.gen_sv_module_verb
+#             sdlm.test_unit.gen_dve_tcl(File.join(args[0],"dve.tcl"))
+#             sdlm.create_xdc
+#         else 
+#             sdlm.origin_sv = true 
+#         end
+#         sdlm
+#     end
+# end
+
 
 
 

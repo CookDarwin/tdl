@@ -2,7 +2,7 @@ require 'yaml'
 class TopModule < SdlModule
 
     attr_accessor :techbench,:sim,:constraint
-
+    @@curr_top_module = nil
     def initialize(name:"tdlmodule",out_sv_path:nil)
         @@curr_top_module = self
         # set sim env
@@ -429,6 +429,7 @@ class TopModule
         if args[0] && File.exist?(args[0])
             # sdlm.gen_sv_module
             sdlm.gen_sv_module_verb
+            sdlm.test_unit.gen_dve_tcl(File.join(args[0],"dve.tcl"))
             sdlm.create_xdc
         else 
             sdlm.origin_sv = true 

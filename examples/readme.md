@@ -1,24 +1,31 @@
 
-## define_module
+## 1. define_module
     define module like systemverilog, include port, parameter
 
-## module_with_package
-    define module with package
+## 2. hdl_class
+    syntax look like hdl
 
-## module_with_interface
-    define interface in module
-
-## top_module 
-    define hdl top module with xdc
-
-## hdl_sdl_instance
+## 3. hdl_sdl_instance
     instance of hdl and sdl
 
-## generate
+## 4. generate
     examples for generate
 
-## logic_combin
+## 5. logic_combin
     combin logic by (>>, <<)
 
-## itegration
+## 6. module_with_interface
+    define interface in module
+    
+## 7. module_with_package
+    define module with package
+
+## 8. top_module 
+    define hdl top module with xdc
+
+## 9. itegration
     powerful!!! Itegrative design
+
+## 10. random
+
+## 11. test_unit

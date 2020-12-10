@@ -250,8 +250,8 @@ class Tdl
         puts TdlTestPoint.echo_list
         # puts(pagination("SIM TEST"))
         # puts TdlSimTest::TdlBaseTestUnit.echo_prj_test_list
-        puts(pagination("TEST UNIT"))
-        puts TopModule.current.test_unit.echo_units
+        puts(pagination("TEST UNIT")) if TopModule.current
+        puts TopModule.current.test_unit.echo_units if TopModule.current
         puts(pagination("SUMMARY"))
         puts "#{TopModule.sim ? 'SIM' : 'SYNTH'} RUN SPEND #{Time.now - $__start_time__} sec @ TIME : #{Time.now}"
     end

@@ -27,46 +27,46 @@ module TdlSpace
             end
         end
 
-        def [](a,b=false)
-            if a.is_a? ClassHDL::OpertorChain
-                a.slaver = true
-            end
+        # def [](a,b=false)
+        #     if a.is_a? ClassHDL::OpertorChain
+        #         a.slaver = true
+        #     end
     
-            if b.is_a? ClassHDL::OpertorChain
-                b.slaver = true
-            end
+        #     if b.is_a? ClassHDL::OpertorChain
+        #         b.slaver = true
+        #     end
 
-            if @end_slice
-                raise TdlError.new("数组下标已经被用片选[#{@end_slice[0]},#{@end_slice[1]}]终结")
-            end
-            RedefOpertor.with_normal_operators do
-                unless b 
-                    ArrayChain.new(obj,chain+[a])
-                else 
-                    # ArrayChain.new(&obj,chain,[a,b])
-                    @end_slice = [a,b]
-                    self
-                end
-            end
-        end
+        #     if @end_slice
+        #         raise TdlError.new("数组下标已经被用片选[#{@end_slice[0]},#{@end_slice[1]}]终结")
+        #     end
+        #     RedefOpertor.with_normal_operators do
+        #         unless b 
+        #             ArrayChain.new(obj,chain+[a])
+        #         else 
+        #             # ArrayChain.new(&obj,chain,[a,b])
+        #             @end_slice = [a,b]
+        #             self
+        #         end
+        #     end
+        # end
 
-        def to_s
-            RedefOpertor.with_normal_operators do
-                str = ""
-                chain.each do |e|
-                    unless e.is_a? ArrayChainSignalMethod
-                        str += "[#{e.to_s}]"
-                    else 
-                        str += ".#{e.name.to_s}"
-                    end
-                end
-                if @end_slice
-                    str += "[#{@end_slice[0]}:#{@end_slice[1]}]"
-                end
+        # def to_s
+        #     RedefOpertor.with_normal_operators do
+        #         str = ""
+        #         chain.each do |e|
+        #             unless e.is_a? ArrayChainSignalMethod
+        #                 str += "[#{e.to_s}]"
+        #             else 
+        #                 str += ".#{e.name.to_s}"
+        #             end
+        #         end
+        #         if @end_slice
+        #             str += "[#{@end_slice[0]}:#{@end_slice[1]}]"
+        #         end
 
-                "#{obj.to_s}#{str}".to_nq
-            end
-        end
+        #         "#{obj.to_s}#{str}".to_nq
+        #     end
+        # end
 
         def inspect
             self.to_s
@@ -87,7 +87,8 @@ module TdlSpace
             ## 判断 obj是否响应方法
             if @obj.respond_to?(method) && !method.to_s.eql?("inst_name")
                 # ArrayChain.new(@obj.to_s,lchain=@chain + [ArrayChainSignalMethod.new(method)])
-                ArrayChain.new(@obj.to_s,lchain=@chain.dup.concat([ArrayChainSignalMethod.new(method)]))
+                # ArrayChain.new(@obj.to_s,lchain=@chain.dup.concat([ArrayChainSignalMethod.new(method)]))
+                ArrayChain.new(@obj,lchain=@chain.dup.concat([ArrayChainSignalMethod.new(method)]))
             else 
             
                 # raise TdlError.new("ArrayChain 没有末尾方法 #{method} #{arg}")

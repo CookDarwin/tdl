@@ -18,7 +18,9 @@ class TdlTestPoint
             raise TdlError.new "Test point<#{@name}> is not respond to belong_to_module"
         end
 
-        TdlTestPoint.define_singleton_method(name) { target }
+        # TdlTestPoint.define_singleton_method(name) { target }
+        TdlTestPoint.define_singleton_method(target.belong_to_module.module_name ) { target.belong_to_module }
+        target.belong_to_module.define_singleton_method(name) { target }
         _self = self
         target.define_singleton_method('tp_instance') { _self }
 

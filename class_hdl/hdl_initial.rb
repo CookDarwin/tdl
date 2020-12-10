@@ -74,11 +74,11 @@ class SdlModule
         ClassHDL::Initial(self,block_name,&block)
     end
 
-    def assert(cond,formats=nil,argsx=[],&block)
+    def assert(cond,formats=false,*argsx,&block)
         unless formats
             return assert_old(cond,nil,&block)    
         end
-        if formats.is_a? String 
+        if formats.is_a?(String) && argsx.empty? 
             return assert_old(cond,argv_str=formats,&block)
         end
 
@@ -91,7 +91,7 @@ class SdlModule
             if block_given?
                 block.call
             else 
-                assert_format_error(formats,argsx)
+                assert_format_error([formats],argsx)
             end
 
         end
