@@ -5,7 +5,7 @@ _______________________________________
 descript:
 author : Cook.Darwin
 Version: VERA.0.0
-created: 2020-08-19 19:03:51 +0800
+created: xxxx.xx.xx
 madified:
 ***********************************************/
 `timescale 1ns/1ps
@@ -18,7 +18,7 @@ module test_top (
 //-------- define ----------------------------------------------------------
 logic  clock_100M;
 logic  rstn_100M;
-axi_stream_inf #(.DSIZE(16)) x_origin_inf (.aclk(clock_100M),.aresetn(rstn_100M),.aclken(1'b1)) ;
+axi_stream_inf #(.DSIZE(16),.USIZE(1)) x_origin_inf (.aclk(clock_100M),.aresetn(rstn_100M),.aclken(1'b1)) ;
 //==========================================================================
 //-------- instance --------------------------------------------------------
 simple_clock simple_clock_inst(

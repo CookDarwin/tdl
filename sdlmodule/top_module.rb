@@ -412,9 +412,10 @@ end
 ## 添加 missing
 
 class TopModule
-
+    ## vcs path 
+    attr_accessor :vcs_path
     def self.method_missing(method,*args,&block)
-        
+
         sdlm = TopModule.new(name: method,out_sv_path: args[0])
         @@package_names ||= []
         sdlm.head_import_packages = []
@@ -429,7 +430,11 @@ class TopModule
         if args[0] && File.exist?(args[0])
             # sdlm.gen_sv_module
             sdlm.gen_sv_module_verb
-            sdlm.test_unit.gen_dve_tcl(File.join(args[0],"dve.tcl"))
+            unless sdlm.vcs_path
+                sdlm.test_unit.gen_dve_tcl(File.join(args[0],"dve.tcl"))
+            else  
+                sdlm.test_unit.gen_dve_tcl(File.join(sdlm.vcs_path,"dve.tcl"))
+            end
             sdlm.create_xdc
         else 
             sdlm.origin_sv = true 
@@ -458,9 +463,13 @@ module TdlSpace
             index = 1
     
             rels = []
+            __collect = TdlTestPoint.inst_collect.select { |e| e.target.belong_to_module.top_tb_ref? }
             @__collect_units__.each do |ue|
-                tp_str = ue.origin.dve_wave_signals.map do |ele|  
-                    "     ->#{TdlTestPoint.inst_collect.index(ele.tp_instance)+1}< :: #{ele.tp_instance.name} || #{ele.tp_instance.file}:#{ele.tp_instance.line}" 
+                tp_str = ue.origin.dve_wave_signals.map do |ele| 
+                    unless __collect.index(ele.tp_instance)
+                        puts ele.name
+                    end
+                    "     ->#{__collect.index(ele.tp_instance)+1}< :: #{ele.tp_instance.name} || #{ele.tp_instance.file}:#{ele.tp_instance.line}" 
                 end.join("\n")
 
                 rels << "  [#{index}]  #{ue.origin.module_name} ::<TestPoints> \n#{tp_str}"
@@ -489,6 +498,46 @@ class TopModule
         @__test_unit__ ||= TdlSpace::TopModuleTestUnitRef.new
     end
 
+end
+
+##  判断 是否被顶层引用
+class SdlModule
+
+    def top_module_ref?
+        if self == TopModule.current.techbench 
+            return true
+        end
+        instanced_and_parent_module.values.each do |pm|
+            if pm.is_a?(TopModule)
+                return true 
+            else
+                if pm.instanced_and_parent_module.any? 
+                    if pm.top_module_ref?
+                        return true 
+                    end
+                end
+            end
+        end
+        return false
+    end
+
+    def top_tb_ref?
+        if self == TopModule.current.techbench 
+            return true
+        end
+        instanced_and_parent_module.values.each do |pm|
+            if pm == TopModule.current.techbench ##pm.is_a?(TechBenchModule)
+                return true 
+            else
+                if pm.instanced_and_parent_module.any? 
+                    if pm.top_tb_ref?
+                        return true 
+                    end
+                end
+            end
+        end
+        return false
+    end
 end
 
 

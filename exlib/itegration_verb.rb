@@ -472,7 +472,7 @@ class ItegrationVerb
                 sdlm.input - "from_up_pass"
                 sdlm.output.logic - "to_down_pass"
             end
-            sdlm.instance_exec(&b[2])
+            sdlm.instance_exec(self,&b[2])
 
             if b[1] && File.exist?(b[1])
                 sdlm.gen_sv_module

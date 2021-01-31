@@ -8,6 +8,7 @@ class TestUnitModule < SdlModule
 
     def test_unit_init(&block)
         Initial do 
+            to_down_pass    <= 1.b0
             initial_exec("wait(from_up_pass)")
             initial_exec("$root.#{TopModule.current.techbench.module_name}.test_unit_region = \"#{module_name}\"")
             block.call 

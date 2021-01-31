@@ -1,6 +1,6 @@
 class  Logic
 
-    def latency(count:num,clock:nil,reset:nil)
+    def latency(count:1,clock:nil,reset:nil)
 
         unless clock
             sclk = @__clock__

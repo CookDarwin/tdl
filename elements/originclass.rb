@@ -234,7 +234,7 @@ class SignalElm < BaseElm
         del_ports = []
         if port_str
             normal_ports = port_str.map do |e|
-                me = e.match(/(?<in_out>input|output|inout)\s*(logic|wire|reg)?\s*(?<vector>\[.*?\])?\s+(?<name>\w+)\s*(?<array>\[.*?\])?/)
+                me = e.match(/(?<in_out>input|output|inout)\s*(logic|wire|reg|bit)?\s*(?<vector>\[.*?\])?\s+(?<name>\w+)\s*(?<array>\[.*?\])?/)
                 # me = e.match(/(?<in_out>input|output|inout)\s*(logic|wire)?\s*(?<vector>\[.*?\])?\s*(?<name>\w+)/)
                 if me
                     del_ports << e

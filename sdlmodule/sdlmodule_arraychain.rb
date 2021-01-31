@@ -136,6 +136,18 @@ module TdlSpace
 
     end 
 
+    class DefGenVar < DefArrayChain
+        def -(name)
+            if @chain.length > 1
+                dimension = @chain[0,@chain.length-1]
+            else 
+                dimension = []
+            end
+            name = to_inp(name)
+            belong_to_module.Def.logic(name: name,dsize: @chain.last || 1,dimension: dimension,type: 'genvar')
+        end
+    end
+
     class DefDataInf_ArrayChain < DefArrayChain
         attr_accessor :dsize
         def initialize(belong_to_module: nil,dsize: 8)
@@ -292,6 +304,10 @@ class SdlModule
 
     def debugLogic
         TdlSpace::DefDebugLogicArrayChain.new(self)
+    end
+
+    def genvar 
+        TdlSpace::DefGenVar.new(self)
     end
 
     # def data_inf_c(dsize: 8,freqM: nil,clock: nil,reset: nil)

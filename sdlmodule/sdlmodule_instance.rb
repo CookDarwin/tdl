@@ -427,6 +427,10 @@ class SdlInstPortSugar < SdlInstSimplePortSugar
         end
     end
 
+    # def [](*args)
+    #     return self 
+    # end
+
 end
 
 class SdlModule

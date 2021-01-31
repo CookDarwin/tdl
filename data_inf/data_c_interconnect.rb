@@ -83,7 +83,7 @@ data_c_pipe_intc_M2S_best_last #(
 //   .PRIO   (\"BEST_ROBIN\"),   //BEST_ROBIN BEST_LAST ROBIN LAST WAIT_IDLE FORCE_ROBIN
     .NUM    (#{@interconnect_up_streams.length})
 )#{name}_M2S_noaddr_inst(
-/*  input [NUM-1:0]    */         .last     ('1),             //ctrl prio
+/*  input [NUM-1:0]    */         .last     ({(#{@interconnect_up_streams.length}){1'b1}}),             //ctrl prio
 /*  data_inf_c.slaver  */         .s00      (sub_#{(name)}),//[NUM-1:0],
 /*  data_inf_c.master  */         .m00      (#{name})
 );

@@ -18,7 +18,11 @@ class TdlTestPoint
             raise TdlError.new "Test point<#{@name}> is not respond to belong_to_module"
         end
 
-        # TdlTestPoint.define_singleton_method(name) { target }
+        ## when test unit in topmodule or topmodule techbench
+        if  target.belong_to_module.is_a?(TopModule) || (TopModule.current && (target.belong_to_module == TopModule.current.techbench))
+            TdlTestPoint.define_singleton_method(name) { target }
+        end
+     
         TdlTestPoint.define_singleton_method(target.belong_to_module.module_name ) { target.belong_to_module }
         target.belong_to_module.define_singleton_method(name) { target }
         _self = self
@@ -37,6 +41,9 @@ class TdlTestPoint
         nll = 4
         dll = 8
         @@inst_collect.each do |e|
+            unless e.target.belong_to_module.top_tb_ref?
+                next 
+            end
             inst_cnt = e.target.belong_to_module.instance_variable_get("@instance_cnt")
             if !inst_cnt || inst_cnt == 0
                 next
