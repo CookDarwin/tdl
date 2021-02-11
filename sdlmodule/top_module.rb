@@ -171,7 +171,7 @@ endmodule\n"
     def gen_sv_module_verb
         mix_itegrations
         ## 添加测试用例 实例化
-        _exec_add_test_unit()
+        _exec_add_test_unit() if TopModule.sim
         
         gen_sv_module
     end

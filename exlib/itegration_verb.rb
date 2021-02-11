@@ -464,6 +464,7 @@ class ItegrationVerb
         return if blocks.empty?
         ItegrationVerb.curr_itgt_push self
 
+        return unless TopModule.sim
        
         blocks.each do |b|
             # @top_module.techbench.instance_exec(self,&b.clone)

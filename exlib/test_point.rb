@@ -249,3 +249,39 @@ end
 # class TdlTestPoint < TdlSpace::TdlTestPoint
 
 # end
+
+module ClassHDL 
+    class StructVar
+        include TdlSpace::ExCreateTP
+
+        ## 获取信号的绝对路径
+        def path_refs(&block)
+            collects = []
+            if @belong_to_module != TopModule.current.techbench
+                @belong_to_module.parents_inst_tree do |tree|
+                    ll = ["$root"]
+                    rt = tree.reverse
+                    rt.each_index do |index|
+                        if rt[index].respond_to? :module_name
+                            ll << rt[index].module_name 
+                        else 
+                            ll << rt[index].inst_name
+                        end
+                    end
+                    ll << self.to_s.to_nq
+                    new_name = ll.join('.').to_nq
+                    if block_given?
+                        if yield(new_name)
+                            collects << new_name
+                        end 
+                    else
+                        collects << new_name
+                    end
+                end
+            else
+                collects = ["$root.#{@belong_to_module.module_name}.#{self.to_s.to_nq}".to_nq]
+            end
+            collects
+        end
+    end
+end

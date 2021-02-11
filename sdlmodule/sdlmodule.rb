@@ -285,7 +285,7 @@ class SdlModule
         # @_add_to_new_module_vars ||= methods.map { |e| e.to_s }
         @_add_to_new_module_vars ||= []
         @_base_methods ||=  methods.map { |e| e.to_s }
-        raise TdlError.new(" SdlMdoule[#{@module_name}] add signal error: same port or instance `#{name}` ") if (@_add_to_new_module_vars | @_base_methods ).include? name
+        raise TdlError.new(" SdlModule[#{@module_name}] add signal error: same port or instance `#{name}` ") if (@_add_to_new_module_vars | @_base_methods ).include? name
 
         @_add_to_new_module_vars << name
     end
@@ -358,5 +358,50 @@ class SdlModule
         else
             super
         end
+    end
+end
+
+## add clock domain
+
+class SdlModule 
+
+
+    def same_clock_domain(*vars)
+        objs = vars.map do |c|
+            ## interface 
+            if c.respond_to?(:clock) && c.clock.respond_to?(:freqM)
+                c.clock.freqM 
+            ## Clock
+            elsif c.is_a?(Clock)
+                c.freqM  
+            else 
+            ## other 
+                nil
+            end 
+        end.uniq.compact
+
+        if objs.size > 1
+            raise TdlError.new " dont same clock domain"
+        end
+
+        ## verification in HDL
+        objs_clks = vars.map do |c| 
+            ## interface 
+            if c.respond_to?(:clock)
+                if c.dimension && c.dimension.any?
+                    c.clock
+                else 
+                    c.clock
+                end
+            ## Clock
+            elsif c.is_a?(Clock)
+                c  
+            else 
+            ## other 
+                c
+            end 
+        end
+
+        Clock.same_clock(self, *objs_clks)
     end
 end

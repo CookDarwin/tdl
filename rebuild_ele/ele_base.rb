@@ -151,7 +151,11 @@ module TdlSpace
              self.class_exec(tdl_key) do |tdl_key|
                 define_method('clock') do 
                     rel = self.instance_variable_get("@_#{tdl_key}_")
-                    rel || TdlSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
+                    if !dimension || dimension.empty?
+                        rel || TdlSpace::ArrayChain.new("#{self.inst_name}.#{hdl_key}")
+                    else  
+                        rel || TdlSpace::ArrayChain.new("#{self.inst_name}[0].#{hdl_key}")
+                    end
                 end
 
                 define_method("clock=") do |arg|

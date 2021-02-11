@@ -106,6 +106,7 @@ module ClassHDL
 
         def -(varname)
             rel = StructVar.new(varname,self)
+            rel.belong_to_module = @sdlm
             rel.dimension = @tmp_dimension
             @sdlm.Logic_collect << rel
             # rel.belong_to_module = @sdlm
@@ -133,7 +134,7 @@ module ClassHDL
 
     class StructVar 
         # include ClassHDL::AssignDefOpertor
-        # attr_accessor :belong_to_module
+        attr_accessor :belong_to_module
         attr_accessor :dimension
         def initialize(name,meta)
             @name = name 

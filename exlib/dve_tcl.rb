@@ -117,7 +117,7 @@ gui_sg_addsignal -group "$_wave_session_group_#{flag}_#{iname}" { #{signals.map{
             base_elms = []
             intf_elms = []
             v.each do |e|
-                if e.is_a?(BaseElm) || e.is_a?(ClassHDL::EnumStruct)
+                if e.is_a?(BaseElm) || e.is_a?(ClassHDL::EnumStruct) || e.is_a?(ClassHDL::StructVar)
                     base_elms   << e 
                 elsif e.is_a? TdlSpace::TdlBaseInterface
                     if e.modport_type

@@ -144,9 +144,11 @@ end
 class Clock
 
     def self.same_clock(blm,*clks)
+        blm.Clock_draw << "//-------- CLOCKs Total #{clks.size} ----------------------"
         clks[1,clks.size].each do |c|
             self.checkpclock(clks[0],c,blm)
         end
+        blm.Clock_draw << "//======== CLOCKs Total #{clks.size} ======================"
     end
 
     def self.checkpclock(aclk,bclk,blm)
@@ -157,23 +159,29 @@ class Clock
         @@_cpc_id ||= 0
         cc_done = "cc_done_#{@@_cpc_id}"
         cc_same = "cc_same_#{@@_cpc_id}"
+        cc_afreq = "cc_afreq_#{@@_cpc_id}"
+        cc_bfreq = "cc_bfreq_#{@@_cpc_id}"
         str =
-"
-//--->> CheckClock <<----------------
-logic #{cc_done};
-logic #{cc_same};
-CheckPClock CheckPClock_inst_#{@@_cpc_id}(
+"//--->> CheckClock <<----------------
+logic #{cc_done},#{cc_same};
+integer #{cc_afreq},#{cc_bfreq};
+ClockSameDomain CheckPClock_inst_#{@@_cpc_id}(
 /*  input         */      .aclk     (#{align_signal(aclk,q_mark=false)}),
 /*  input         */      .bclk     (#{align_signal(bclk,q_mark=false)}),
 /*  output logic  */      .done     (#{cc_done}),
-/*  output logic  */      .same     (#{cc_same})
+/*  output logic  */      .same     (#{cc_same}),
+/*  output integer */     .aFreqK   (#{cc_afreq}),
+/*  output integer */     .bFreqK   (#{cc_bfreq})
 );
 
 initial begin
     wait(#{cc_done});
     assert(#{cc_same})
     else begin
-        $error(\"`#{blm.module_name}` clock is not same\");
+        $error(\"--- Error : `#{blm.module_name}` clock is not same, #{aclk}< %0f M> != #{bclk}<%0f M>\",1000000.0/#{cc_afreq}, 1000000.0/#{cc_bfreq});
+        repeat(10)begin 
+            @(posedge #{aclk});
+        end
         $stop;
     end
 end
